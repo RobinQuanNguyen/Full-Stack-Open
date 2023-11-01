@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
-import Filter from './components/Filter'
-import countryService from './services/country'
 import Country from './components/Country'
-import CountryData from './components/CountryData'
+import axios from 'axios'
+import countryService from './services/country'
 
 function App() {
   const [filter, setFilter] = useState('')
@@ -10,10 +9,14 @@ function App() {
   const [showCountry, setShowCountry] = useState([])
 
   useEffect(() => {
+    // axios.get("https://studies.cs.helsinki.fi/restcountries/api/all")
+    //   .then((respone) => {
+    //     setCountries(respone.data)
+    //   })
     countryService
       .getAll()
-      .then(respond => {
-        setCountries(respond.data)
+      .then((respone) => {
+        setCountries(respone.data)
       })
 
   },[])
@@ -22,36 +25,20 @@ function App() {
     const searchFilter = event.target.value;
     setFilter(searchFilter);
 
-    const filteredCountries = countries.filter((country) =>
-      country.name.official.toLowerCase().includes(searchFilter.toLowerCase())
+    setShowCountry(
+      countries.filter((country) => 
+        country.name.common.toLowerCase().includes(searchFilter.toLowerCase())
+      )
     );
-
-    setShowCountry(filteredCountries);
   };
 
 
   return (
     <div>
       <div>
-        <Filter filter = {filter} handleFindCountry = {handleFindCountry}/>
+        find countries <input value = {filter} onChange={handleFindCountry} />
       </div>
-
-      {/* {foundCountries.map((country) => (
-        <Country 
-          key={country.alpha2Code} country={country}
-          />
-      ))} */}
-
-    {showCountry.length === 1 ? (
-      <CountryData country={showCountry[0]} />
-    ) : showCountry.length <= 10 ? (
-      <Country showCountry={showCountry} />
-    ) : (
-      <div>
-        Too many matches, specify another filter
-      </div>
-    )}
-
+        <Country showCountry={showCountry} />
     </div>
   )
 }
