@@ -7,7 +7,6 @@ function App() {
   const [filter, setFilter] = useState('')
   const [countries, setCountries] = useState([])
   const [showCountry, setShowCountry] = useState([])
-
   useEffect(() => {
     // axios.get("https://studies.cs.helsinki.fi/restcountries/api/all")
     //   .then((respone) => {

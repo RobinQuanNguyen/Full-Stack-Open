@@ -10,7 +10,6 @@ const Country = ({showCountry, setShowCountry}) => {
         setSelectedCountry(country);
     };
 
-    const resetCountry = () => setSelectedCountry(null)
 
     if (selectedCountry) {
         return <CountryData country={selectedCountry} />;
@@ -23,9 +22,8 @@ const Country = ({showCountry, setShowCountry}) => {
                 {country.name.official}
                 {""}
                 <button onClick={() => handleShowClick(country)}>show</button>
-                <Country showCountry={showCountry} setShowCountry={setShowCountry}>
-                <button onClick={resetCountry}>Reset</button>
-                </Country>
+                {/* <Country showCountry={showCountry} setShowCountry={setShowCountry}> */}
+                {/* </Country> */}
                 </div>
             ));
         } else {
