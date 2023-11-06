@@ -4,6 +4,8 @@ import Person from './components/Person'
 import React from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
+const baseUrl = '/api/persons'
+
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -13,7 +15,7 @@ const App = () => {
 
   useEffect(() => {
     axios
-      .get('http://localhost:3001/api/persons')
+      .get(baseUrl)
       .then(response => {
         setPersons(response.data)
       })
