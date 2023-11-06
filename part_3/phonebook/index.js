@@ -5,6 +5,10 @@ const morgan = require('morgan')
 
 const app = express()
 
+const cors = require('cors')
+
+app.use(cors())
+
 morgan.token('body', function(request, response) {
     return request.method === "POST" ? JSON.stringify(request.body) : ""
 })
@@ -43,7 +47,7 @@ let persons = [
 // })
 
 app.get('/', (request, response) => {
-    response.send('<h1>Welcome To ... Nowhere</h1>')
+    response.send('<h1>Welcome To ... nowhere</h1>')
 })
 
 app.get('/api/persons', (request, response) => {
