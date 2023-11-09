@@ -1,7 +1,34 @@
-const http = require('http')
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const cors = require('cors')
+//const mongoose = require('mongoose')
+const Note = require('./models/note')
+require('dotenv').config()
+
+
+
+
+// const url =
+//   `mongodb+srv://robin:${password}@dtbase.bnswbxs.mongodb.net/noteApp?retryWrites=true&w=majority`
+
+// mongoose.set('strictQuery',false)
+// mongoose.connect(url)
+
+// const noteSchema = new mongoose.Schema({
+//   content: String,
+//   important: Boolean,
+// })
+
+// const Note = mongoose.model('Note', noteSchema)
+
+// noteSchema.set('toJSON', {
+//   transform: (document, returnedObject) => {
+//     returnedObject.id = returnedObject._id.toString()
+//     delete returnedObject._id
+//     delete returnedObject.__v
+//   }
+// })
 
 app.use(cors())
 const requestLogger = (request, response, next) => {
@@ -44,8 +71,10 @@ let notes = [
   })
 
   // get all notes
-  app.get('/api/notes/', (request, response) => {
-    response.json(notes)
+  app.get('/api/notes', (request, response) => {
+    Note.find({}).then(notes => {
+      response.json(notes)
+    })
   })
   
   app.get('/api/notes/:id', (request, response) => {
@@ -106,7 +135,7 @@ let notes = [
   })
   app.use(unknownEndpoint)
 
-  const PORT = process.env.PORT || 3001
+  const PORT = process.env.PORT
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
   })
