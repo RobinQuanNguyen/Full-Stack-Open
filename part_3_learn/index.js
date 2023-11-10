@@ -1,16 +1,15 @@
-require('dotenv').config()
 const express = require('express')
 const app = express()
 const cors = require('cors')
-//const mongoose = require('mongoose')
 const Note = require('./models/note')
 require('dotenv').config()
 
 
-
+// DO NOT SAVE YOUR PASSWORD TO GITHUB!!
+const password = process.argv[2]
 
 // const url =
-//   `mongodb+srv://robin:${password}@dtbase.bnswbxs.mongodb.net/noteApp?retryWrites=true&w=majority`
+//   `mongodb+srv://robin:${password}@dtbase.bnswbxs.mongodb.net/?retryWrites=true&w=majority`
 
 // mongoose.set('strictQuery',false)
 // mongoose.connect(url)
@@ -22,13 +21,7 @@ require('dotenv').config()
 
 // const Note = mongoose.model('Note', noteSchema)
 
-// noteSchema.set('toJSON', {
-//   transform: (document, returnedObject) => {
-//     returnedObject.id = returnedObject._id.toString()
-//     delete returnedObject._id
-//     delete returnedObject.__v
-//   }
-// })
+
 
 app.use(cors())
 const requestLogger = (request, response, next) => {
