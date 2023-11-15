@@ -1,15 +1,50 @@
+require('dotenv').config()
+
 const { response } = require('express')
-//const http = require('http')
 const express = require('express')
 const morgan = require('morgan')
+const Person = require('./models/person')
+
 
 const app = express()
 
 const cors = require('cors')
+const nodemon = require('nodemon')
 
 app.use(cors())
 
 app.use(express.static('dist'))
+
+const password = process.argv[2]
+
+// const name = process.argv[3]
+// const phone_number = process.argv[4]
+
+
+// const url =
+//   `mongodb+srv://robin:${password}@dtbase.bnswbxs.mongodb.net/personApp?retryWrites=true&w=majority`
+
+// mongoose.set('strictQuery',false)
+// mongoose.connect(url)
+
+
+
+// const Person = mongoose.model('Person', personSchema)
+
+// if (name && phone_number) {
+//     const person = new Person({
+//         content: name,
+//         number: phone_number,
+//     })
+
+//     person.save().then(result => {
+//         console.log(`added ${name} number ${phone_number} to phonebook`)
+//         //mongoose.connection.close()
+//       })
+    
+    
+// }
+
 
 morgan.token('body', function(request, response) {
     return request.method === "POST" ? JSON.stringify(request.body) : ""
@@ -53,7 +88,10 @@ app.get('/', (request, response) => {
 })
 
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    Person.find({}).then(persons => {
+            response.send(persons)
+        })
+    
 })
 
 
@@ -141,6 +179,7 @@ app.post('/api/persons', (request, response) => {
 
 
 
-const PORT = 3001
+const PORT = process.env.PORT
 app.listen(PORT)
+//console.log("password is " + password)
 console.log(`Server running on PORT ${PORT}`)
