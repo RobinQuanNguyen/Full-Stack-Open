@@ -17,7 +17,7 @@ mongoose.set('strictQuery',false)
 mongoose.connect(url)
 
 const personSchema = new mongoose.Schema({
-  content: String,
+  name: String,
   number: String,
 })
 
@@ -25,7 +25,7 @@ const Person = mongoose.model('Person', personSchema)
 
 if (name && phone_number) {
     const person = new Person({
-        content: name,
+        name: name,
         number: phone_number,
     })
 
@@ -37,9 +37,16 @@ if (name && phone_number) {
     console.log("phonebook:")
     Person.find({}).then(result => {
         result.forEach(person => {
-            console.log(person.content, person.number)
+            console.log(person.name, person.number)
         })
         mongoose.connection.close()
       })
 }
 
+personSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
+  }
+})

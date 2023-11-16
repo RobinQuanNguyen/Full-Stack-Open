@@ -46,6 +46,7 @@ const password = process.argv[2]
 // }
 
 
+
 morgan.token('body', function(request, response) {
     return request.method === "POST" ? JSON.stringify(request.body) : ""
 })
@@ -97,34 +98,58 @@ app.get('/api/persons', (request, response) => {
 
 app.get('/api/info', (request, response) => {
 
-    const total = persons.length
-    var date = new Date()
+    // const total = persons.length
+    // var date = new Date()
 
-    const info =  ` Phonebook has info for ${total} people`
+    // const info =  ` Phonebook has info for ${total} people`
 
-    const reply = `${info}<br>${date}`
+    // const reply = `${info}<br>${date}`
 
-    response.send(reply)
+    // response.send(reply)
+    Person.find({}).then(result => {
+        response.send(persons)
+            .send(`<p>Phonebook has info for ${result.length} people</p><p>${Date()}</p>`)
+      })
 })
 
-app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    console.log(id)
+app.get('/api/persons/:id', (request, response, next) => {
+    // const id = Number(request.params.id)
+    // console.log(id)
 
-    // const person = persons.find(person => {
-    //     console.log(person.id, typeof person.id, id, typeof id, person.id === id)
-    //     return person.id === id
-    // })
+    // // const person = persons.find(person => {
+    // //     console.log(person.id, typeof person.id, id, typeof id, person.id === id)
+    // //     return person.id === id
+    // // })
 
-    const person = persons.find(person => person.id === id)
-    console.log(person)
-    if (person) {
+    // const person = persons.find(person => person.id === id)
+    // console.log(person)
+    // if (person) {
+    //     response.json(person)
+    // }
+    // else {
+    //     response.status(404).end()
+    // }
+    Person.findById(request.params.id)
+    .then(person => {
+      if (person) {
         response.json(person)
-    }
-    else {
+      } else {
         response.status(404).end()
-    }
+      }
+    })
+    .catch(error => next(error))
 })
+
+app.get('/api/persons/:id', (request, response, next) => {
+    const {name, number} = request.body
+
+    Person.findByIdAndUpdate(request.params.id, {name, number}, {new: true})
+        .then(updatedPerson => {
+            response.json(updatedPerson)
+        })
+        .catch(error => next(error))
+})
+  
 
 app.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
@@ -142,43 +167,54 @@ const generatedId = () => {
 }
 
 app.post('/api/persons', (request, response) => {
-    const body = request.body
-    // console.log(body)
-    // response.json(body)
-
-    if (!body.name) {
-        return response.status(400).json({
-          error: 'name missing'
+    if ( body.name || body.number) {
+        return respond.status(400).json({
+          error: 'Name or number is missing',
         })
       }
-    
-    if (!body.number) {
-        return response.status(400).json({
-            error: 'number missing'
-        })
-    }
-    
-    //persons = persons.filter(person => person.id !== id)
-    check_person = persons.find(person => person.name === body.name)
-    if (check_person) {
-        return response.status(400).json({
-            error: 'name must be unique'
-        })
-    }
-
-    const person = {
-        id: generatedId(),
+      const person = new Person({
         name: body.name,
         number: body.number,
-    }
-
-    persons = persons.concat(person)
-
-    response.json(person)
+      })
+      person.save().then(result => {
+        respond.json(result)
+      }).catch(error => next(error))
 })
 
+app.put('/api/persons/:id', (request, response, next) => {
+    const { name, number } = request.body
+  
+    Person.findByIdAndUpdate(
+      request.params.id,
+      { name, number },
+      { new: true, runValidators: true, context: 'query' }
+    )
+      .then(updatedPerson => {
+        response.json(updatedPerson)
+      })
+      .catch(error => next(error))
+  })
 
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: 'unknown endpoint' })
+  
+}
 
+app.use(unknownEndpoint)
+
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message)
+  
+    if (error.name === 'CastError') {
+      return response.status(400).send({ error: 'malformatted id' })
+    } else if (error.name === 'ValidationError') {
+        return response.status(400).json({ error: error.message })
+      }
+  
+    next(error)
+  }
+
+app.use(errorHandler)
 const PORT = process.env.PORT
 app.listen(PORT)
 //console.log("password is " + password)
