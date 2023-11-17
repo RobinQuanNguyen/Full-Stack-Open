@@ -76,7 +76,7 @@ const App = () => {
       const personObject = {
         name: newName,
         number: newNumber,
-        id: persons.length + 1
+        //id: persons.length + 1
       }
 
       personService
@@ -91,6 +91,15 @@ const App = () => {
           // setErrorMessage(
           //   `Added ${newName}`
           // )
+          setTimeout(() => {
+            setErrorMessage({message: '', code: 0})
+          }, 5000)
+        })
+        .catch(error => {
+          setErrorMessage({
+            message: error.response.data.error,
+            code: 2
+          })
           setTimeout(() => {
             setErrorMessage({message: '', code: 0})
           }, 5000)
@@ -125,7 +134,7 @@ const App = () => {
     setFilter(value)
   }
 
-  const handleDeleteOf = (id, name) => {
+  const handleDeleteOf = (_id, name) => {
     const confirm_check = window.confirm(`Delete ${name}?`)
 
     if (confirm_check === false) {
@@ -133,11 +142,11 @@ const App = () => {
     }
 
     axios
-      .delete(`http://localhost:3001/api/persons/${id}`)
+      .delete(`http://localhost:3001/api/persons/${_id}`)
       .then((response) => {
         console.log("Delete successfully")
         //Update the list after delete
-        setPersons(persons.filter(person => person.id !== id))
+        setPersons(persons.filter(person => person._id !== _id))
 
         setErrorMessage({
           message: `Deleted ${name}`,
@@ -172,10 +181,10 @@ const App = () => {
       <h2>Numbers</h2>
       {foundPersons.map((person) => (
         <Person 
-          key={person.id} 
+          key={person._id} 
           name={person.name} 
           number={person.number}
-          handleDelete={() => handleDeleteOf(person.id, person.name)}
+          handleDelete={() => handleDeleteOf(person._id, person.name)}
         />
       ))
       }

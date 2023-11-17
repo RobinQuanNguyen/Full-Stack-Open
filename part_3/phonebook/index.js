@@ -151,11 +151,16 @@ app.get('/api/persons/:id', (request, response, next) => {
 })
   
 
-app.delete('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    persons = persons.filter(person => person.id !== id)
-    console.log('Deleted')
-    response.status(204).end()
+app.delete('/api/persons/:id', (request, response, next) => {
+    // const id = Number(request.params.id)
+    // persons = persons.filter(person => person.id !== id)
+    // console.log('Deleted')
+    // response.status(204).end()
+    Person.findByIdAndDelete(request.params.id)
+      .then(result => {
+        response.status(204).end()
+      })
+      .catch(error => next(error))
 })
 
 const generatedId = () => {
@@ -166,19 +171,27 @@ const generatedId = () => {
     return newId
 }
 
-app.post('/api/persons', (request, response) => {
-    if ( body.name || body.number) {
-        return respond.status(400).json({
-          error: 'Name or number is missing',
-        })
-      }
-      const person = new Person({
-        name: body.name,
-        number: body.number,
-      })
+app.post('/api/persons', (request, response, next) => {
+    const body = request.body
+    //console.log(body) // đang sửa ở đây
+
+    const person = new Person({
+      name: body.name,
+      number: body.number,
+    })
+
+    //console.log(person) 
+
+    // if ( body.name  || body.number) {
+    //     return response.status(400).json({
+    //       error: 'Name or number is missing',
+    //     })
+    //   }
+      
       person.save().then(result => {
-        respond.json(result)
-      }).catch(error => next(error))
+        response.json(result)
+      })
+      .catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
