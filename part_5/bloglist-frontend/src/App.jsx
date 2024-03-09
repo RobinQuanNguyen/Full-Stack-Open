@@ -3,6 +3,8 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
+import BlogForm from './components/BlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -81,6 +83,10 @@ const App = () => {
           setMessage({message: '', code: 0})
         }, 5000)
 
+        // Fetch blogs from server again
+        blogService.getAll().then(blogs =>
+          setBlogs(blogs)
+      )
       })
   }
 
@@ -128,39 +134,6 @@ const App = () => {
       </form>
   )
 
-  const addNoteForm = () => (
-    <form onSubmit={handleCreateNewBlog}>
-      <h2>create new</h2>
-      <div>
-        title
-          <input
-            type="text"
-            value={newTitle}
-            name="Title"
-            onChange={({ target }) => setNewTitle(target.value)}
-          />
-      </div>
-      <div>
-        author
-          <input
-            type="text"
-            value={newAuthor}
-            name="Author"
-            onChange={({ target }) => setNewAuthor(target.value)}
-          />
-      </div>
-      <div>
-        url 
-          <input
-            type="text"
-            value={newUrl}
-            name="Url"
-            onChange={({ target }) => setNewUrl(target.value)}
-          />
-      </div>
-      <button type="submit">save</button>
-    </form>
-  )
 
   const blogList = () => (
     <div>
@@ -172,6 +145,12 @@ const App = () => {
           window.localStorage.clear()
           setUser(null)
         }}>logout</button>
+
+        <p></p>
+
+        <button onClick={() => {
+          setBlogs([...blogs].sort((a, b) => b.likes - a.likes))
+        }}>Sort by likes</button>
       
 
       {blogs.map(blog =>
@@ -185,7 +164,19 @@ const App = () => {
       <Notification message={message.message} code={message.code}/>
       {!user && loginForm()}
       {user && <div>
-        {addNoteForm()}
+        {/* {addNoteForm()} */}
+        <Togglable buttonLabel="new blog">
+          <BlogForm
+            newTitle={newTitle}
+            newAuthor={newAuthor}
+            newUrl={newUrl}
+            handleCreateNewBlog={handleCreateNewBlog}
+            handleTitleChange={({ target }) => setNewTitle(target.value)}
+            handleAuthorChange={({ target }) => setNewAuthor(target.value)}
+            handleUrlChange={({ target }) => setNewUrl(target.value)}
+
+          />
+        </Togglable>
         {blogList()}
         </div>}
     </div>

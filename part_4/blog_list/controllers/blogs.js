@@ -8,22 +8,24 @@ blogsRouter.get('/', async (request, response) => {
     const blogs = await Blog.find({}).populate('user', {username: 1, name: 1})
     response.json(blogs)
 
+    console.log('blogs', blogs)
+
     // Blog.find({}).then(blogs => {
     //   response.json(blogs)
     // })
   })
 
-  // blogsRouter.get('/:id', async (request, response) => {
-  //   const blog = await Blog.findById(request.params.id)
-  //     //.then(blog => {
-  //   if (blog) {
-  //     response.json(blog)
-  //   } else {
-  //     response.status(404).end()
-  //   }
-  // //     })
-  // //     .catch(error => next(error))
-  // })
+  blogsRouter.get('/:id', async (request, response) => {
+    const blog = await Blog.findById(request.params.id)
+      //.then(blog => {
+    if (blog) {
+      response.json(blog)
+    } else {
+      response.status(404).end()
+    }
+  //     })
+  //     .catch(error => next(error))
+  })
 
   const getTokenFrom = request => {
     const authorization = request.get('authorization')
@@ -102,7 +104,7 @@ blogsRouter.get('/', async (request, response) => {
 
   blogsRouter.put('/:id', async (request, response) => {
     const body = request.body
-    const blog = await Blog.findById(request.params.id, {
+    const blog = await Blog.findByIdAndUpdate(request.params.id, {
       title: body.title,
         author: body.author,
         url: body.url,
