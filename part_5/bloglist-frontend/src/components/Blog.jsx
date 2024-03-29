@@ -2,7 +2,7 @@ import Togglable from "./Togglable"
 import { useState } from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, addLike }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -19,6 +19,9 @@ const Blog = ({ blog }) => {
       .update(blog.id, blog)
       .then((returnedBlog) => {
         setLikes(returnedBlog.likes)
+        if (addLike) {
+          addLike(blog)
+        }
       })
       .catch(error => {
         console.log(error)
@@ -43,7 +46,7 @@ const Blog = ({ blog }) => {
 
   return (
 
-    <div style={blogStyle}>
+    <div style={blogStyle} className="blog">
       <div>
         {blog.title} {blog.author}
       </div>
