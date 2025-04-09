@@ -1,22 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { getAll, createNew, updateVotes } from '../services/anecdote'  // Named imports
 
-// Initial state for anecdotes (simulating loading from a backend or database)
-const initialState = [
-  { content: 'If it hurts, do it more often', id: 1, votes: 0 },
-  { content: 'Adding manpower to a late software project makes it later!', id: 2, votes: 0 },
-  { content: 'The first 90 percent of the code accounts for the first 90 percent of the development time... The remaining 10 percent of the code accounts for the other 90 percent of the development time.', id: 3, votes: 0 },
-  { content: 'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.', id: 4, votes: 0 },
-  { content: 'Premature optimization is the root of all evil.', id: 5, votes: 0 },
-  { content: 'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.', id: 6, votes: 0 }
-]
+const initialState = []
 
-// Create the slice with reducers and actions
 const anecdotesSlice = createSlice({
   name: 'anecdotes',
   initialState,
   reducers: {
-    // Action to vote for an anecdote
-    voteAnecdote(state, action) {
+    voteAnecdoteSuccess(state, action) {
       const id = action.payload
       const anecdoteToChange = state.find((n) => n.id === id)
       const changedAnecdote = {
@@ -27,39 +18,40 @@ const anecdotesSlice = createSlice({
         anecdote.id !== id ? anecdote : changedAnecdote
       )
     },
-    // Action to add a new anecdote
     addAnecdote(state, action) {
       const newAnecdote = action.payload
-      state.push(newAnecdote) // Add new anecdote to the state
+      state.push(newAnecdote)  // Add the new anecdote to the store
     },
-    // Action to set all anecdotes (if you need to replace the entire list of anecdotes)
     setAnecdotes(state, action) {
-      return action.payload
-    }
-  }
+      return action.payload  // Set the anecdotes to the fetched data
+    },
+  },
 })
 
 // Export actions
-export const { voteAnecdote, addAnecdote, setAnecdotes } = anecdotesSlice.actions
+export const { voteAnecdoteSuccess, addAnecdote, setAnecdotes } = anecdotesSlice.actions
 
-// Example of a thunk to simulate fetching anecdotes (without the actual service)
+// Async action to initialize anecdotes from the backend
 export const initialAnecdotes = () => {
   return async (dispatch) => {
-    // Simulate loading data from a "service" (can replace this with actual API call)
-    const anecdotes = initialState
-    dispatch(setAnecdotes(anecdotes)) // Dispatch the fetched anecdotes to Redux
+    const anecdotes = await getAll()  // Fetch all anecdotes
+    dispatch(setAnecdotes(anecdotes))
   }
 }
 
-// Action to create a new anecdote
+// Action to create a new anecdote (persist in backend and Redux store)
 export const createAnecdote = (content) => {
   return async (dispatch) => {
-    const newAnecdote = {
-      content,
-      id: Math.floor(Math.random() * 1000000),  // Generate unique ID
-      votes: 0,
-    }
-    dispatch(addAnecdote(newAnecdote))  // Dispatch the new anecdote to Redux store
+    const newAnecdote = await createNew(content)  // Create the new anecdote in the backend
+    dispatch(addAnecdote(newAnecdote))  // Add the newly created anecdote to the Redux store
+  }
+}
+
+// Action to update votes for an anecdote
+export const voteAnecdote = (id) => {
+  return async (dispatch) => {
+    dispatch(voteAnecdoteSuccess(id))  // Update the vote count in Redux store
+    await updateVotes(id)  // Persist the vote in the backend
   }
 }
 
