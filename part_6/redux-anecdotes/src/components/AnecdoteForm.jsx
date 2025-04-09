@@ -1,33 +1,35 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { addAnecdote } from '../reducers/anecdoteReducer'
+import { createAnecdote } from '../reducers/anecdoteReducer'
+import { setNotificationTime } from '../reducers/notificationReducer'  // Import the notification action
 
 const AnecdoteForm = () => {
   const [newAnecdote, setNewAnecdote] = useState('')
   const dispatch = useDispatch()
 
-  const handleNewAnecdoteChange = (event) => {
+  const handleChange = (event) => {
     setNewAnecdote(event.target.value)
   }
 
-  const handleAddAnecdote = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault()
     if (newAnecdote.trim() !== '') {
-      dispatch(addAnecdote(newAnecdote)) // Dispatch the action to add the new anecdote
-      setNewAnecdote('') // Reset the input field after submission
+      dispatch(createAnecdote(newAnecdote))  // Dispatch the action to create the new anecdote
+      dispatch(setNotificationTime(`You created a new anecdote: '${newAnecdote}'`, 5))  // Display notification for 5 seconds
+      setNewAnecdote('')  // Clear the input field
     }
   }
 
   return (
-    <form onSubmit={handleAddAnecdote}>
+    <form onSubmit={handleSubmit}>
       <div>
         <input
           value={newAnecdote}
-          onChange={handleNewAnecdoteChange}
+          onChange={handleChange}
           placeholder="Enter a new anecdote"
         />
       </div>
-      <button type="submit">create</button>
+      <button type="submit">Create</button>
     </form>
   )
 }
