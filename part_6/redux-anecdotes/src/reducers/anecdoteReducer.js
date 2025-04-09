@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { getAll, createNew, updateVotes } from '../services/anecdote'  // Named imports
+import { getAll, createNew, updateVotes } from '../services/anecdote'
 
 const initialState = []
 
@@ -20,7 +20,7 @@ const anecdotesSlice = createSlice({
     },
     addAnecdote(state, action) {
       const newAnecdote = action.payload
-      state.push(newAnecdote)  // Add the new anecdote to the store
+      state.push(newAnecdote)  // Add the newly created anecdote to the state
     },
     setAnecdotes(state, action) {
       return action.payload  // Set the anecdotes to the fetched data
@@ -34,12 +34,12 @@ export const { voteAnecdoteSuccess, addAnecdote, setAnecdotes } = anecdotesSlice
 // Async action to initialize anecdotes from the backend
 export const initialAnecdotes = () => {
   return async (dispatch) => {
-    const anecdotes = await getAll()  // Fetch all anecdotes
-    dispatch(setAnecdotes(anecdotes))
+    const anecdotes = await getAll()  // Fetch all anecdotes from the backend
+    dispatch(setAnecdotes(anecdotes))  // Set the anecdotes to the Redux store
   }
 }
 
-// Action to create a new anecdote (persist in backend and Redux store)
+// Async action to create a new anecdote (persist in backend and Redux store)
 export const createAnecdote = (content) => {
   return async (dispatch) => {
     const newAnecdote = await createNew(content)  // Create the new anecdote in the backend

@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   message: '',
-  duration: 5,
+  duration: 5,  // Duration in seconds
 }
 
 const notificationSlice = createSlice({
@@ -22,11 +22,13 @@ const notificationSlice = createSlice({
 
 export const { setNotification, clearNotification } = notificationSlice.actions
 export default notificationSlice.reducer
+
+// Simplified notification action creator
 export const setNotificationTime = (message, duration) => {
   return (dispatch) => {
-    dispatch(setNotification({ message, duration }))
+    dispatch(setNotification({ message, duration }))  // Set the notification message and duration
     setTimeout(() => {
-      dispatch(clearNotification())
-    }, duration * 1000)
+      dispatch(clearNotification())  // Clear the notification after the specified duration
+    }, duration * 1000)  // Convert seconds to milliseconds
   }
 }

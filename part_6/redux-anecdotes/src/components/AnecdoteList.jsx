@@ -33,7 +33,7 @@ const AnecdoteList = () => {
   // Function to handle voting
   const vote = (id, content) => {
     dispatch(voteAnecdote(id))  // Dispatch vote action for the anecdote
-    dispatch(setNotificationTime(`You voted for '${content}'`, 5))  // Display notification for 5 seconds
+    dispatch(setNotificationTime(`You voted for '${content}'`, 10))  // Display notification for 10 seconds
   }
 
   // Function to toggle sorting

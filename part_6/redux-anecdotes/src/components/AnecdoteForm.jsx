@@ -14,8 +14,10 @@ const AnecdoteForm = () => {
   const handleSubmit = (event) => {
     event.preventDefault()
     if (newAnecdote.trim() !== '') {
-      dispatch(createAnecdote(newAnecdote))  // Dispatch the action to create the new anecdote
-      dispatch(setNotificationTime(`You created a new anecdote: '${newAnecdote}'`, 5))  // Display notification for 5 seconds
+      // Dispatch createAnecdote to create the new anecdote on the backend
+      dispatch(createAnecdote(newAnecdote))
+      // Dispatch setNotificationTime to show a notification for 5 seconds
+      dispatch(setNotificationTime(`You created a new anecdote: '${newAnecdote}'`, 5))
       setNewAnecdote('')  // Clear the input field
     }
   }

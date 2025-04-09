@@ -3,7 +3,7 @@
     {
       "id": "1",
       "content": "If it hurts, do it more often",
-      "votes": 3
+      "votes": 4
     },
     {
       "id": "2",
@@ -28,12 +28,17 @@
     {
       "id": "6",
       "content": "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.",
-      "votes": 0
+      "votes": 3
     },
     {
       "id": "d045",
       "content": "Something is anything",
-      "votes": 5
+      "votes": 13
+    },
+    {
+      "id": "5f56",
+      "content": "test again",
+      "votes": 2
     }
   ]
 }
