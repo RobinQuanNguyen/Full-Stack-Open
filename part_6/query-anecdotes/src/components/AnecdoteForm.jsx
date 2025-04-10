@@ -17,18 +17,29 @@ const AnecdoteForm = () => {
     },
     onError: (error) => {
       const id = Math.floor(Math.random() * 1000000)
-      notificationHandler({ content: error.message, id })
+
+      let message = "Failed to create anecdote."
+
+      // ✅ This works only if we rethrow the original error from anecdote.js
+      if (error?.response?.status === 400) {
+        message = "The anecdote is too short. It must have a length of 5 or more!"
+      }
+
+      notificationHandler({ content: message, id })
     }
   })
 
-  const onCreate = async (event) => {
+  const onCreate = (event) => {
     event.preventDefault()
     const content = event.target.anecdote.value
     event.target.anecdote.value = ''
-
-    // Enforce the "at least 5 characters" validation
-    if (content.length < 5) return
-
+  
+    if (content.length < 5) {
+      const id = Math.floor(Math.random() * 1000000)
+      notificationHandler({ content: "The anecdote is too short. It must have a length of 5 or more!", id })
+      return
+    }
+  
     newAnecdoteMutation.mutate({ content, votes: 0 })
   }
 

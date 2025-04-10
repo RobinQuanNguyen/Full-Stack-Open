@@ -13,13 +13,14 @@ const getAnecdotes = async () => {
 }
 
 const createAnecdote = async (anecdote) => {
-  try {
-    const response = await axios.post(baseUrl, anecdote)
-    return response.data
-  } catch (error) {
-    throw new Error('Failed to create a new anecdote. Please try again later.')
+    try {
+      const response = await axios.post(baseUrl, anecdote)
+      return response.data
+    } catch (error) {
+      throw error
+    }
   }
-}
+  
 
 const updateAnecdote = async (anecdote) => {
   try {
